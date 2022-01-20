@@ -1,0 +1,18 @@
+{
+  "name": "Codeable Notifications",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Shows the number of unread Codeable notifications in the document title (Gmail style)",
+  "content_scripts": [
+    {
+      "matches": ["https://app.codeable.io/*"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject-script.js"],
+      "matches": ["https://app.codeable.io/*"]
+    }
+  ]
+}
