@@ -27,7 +27,7 @@ document.addEventListener('click', (e) => {
 }, false)
 
 
-/* --- Show comment and contractor count in notifications widget --- */
+/* --- Show comment and expert count in notifications widget --- */
 
 // TODO refactor comments and experts helper functions into one
 function createOrUpdateExpertsMeta(notification_el, number) {
@@ -113,13 +113,13 @@ function updateNotificationsMeta() {
       })
       .then(res => res.json())
       .then(comments => {
-        // Filter out non-contractor comments
+        // Filter out non-expert comments
         let expert_comments = comments.filter(comment => comment.user.role == 'contractor')
 
-        // Filter out private comments and contractor-only comments
+        // Filter out private comments and expert-only comments
         let public_comments = expert_comments.filter(comment => !comment.private && !comment.is_contractors_only)
         
-        // Filter out duplicate contractor comments
+        // Filter out duplicate expert comments
         let unique_experts = public_comments.filter((value, index, self) => {
           return self.findIndex(v => v.user.id === value.user.id) === index;
         })
