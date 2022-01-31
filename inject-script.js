@@ -3,11 +3,11 @@
 // Listen for page load events, throttled to 2 seconds
 if (window.Pace) {
   let last_message_sent = Date.now()
-  let interval = 2000 // 2 seconds
+  const message_interval = 2000 // 2 seconds
 
   window.Pace.on('done', () => {
 
-    if (Date.now() > last_message_sent + interval) {
+    if (Date.now() > last_message_sent + message_interval) {
       window.postMessage({type: 'UPDATE_NOTIFICATIONS'})
       last_message_sent = Date.now()
     }
@@ -15,13 +15,17 @@ if (window.Pace) {
 }
 
 // Listen for new notification sound
-document.querySelector('#filling-inbox').addEventListener('play', () => {
-  window.postMessage({type: 'UPDATE_NOTIFICATIONS'})
-}, false)
+const audio_element = document.querySelector('#filling-inbox')
+
+if (audio_element) {
+  audio_element.addEventListener('play', () => {
+    window.postMessage({type: 'UPDATE_NOTIFICATIONS'})
+  }, false)
+}
 
 // Listen for user clicking "Mark all as read"
 document.addEventListener('click', (e) => {
-  if (e.target.innerText == 'Mark all as read') {
+  if (e.target.innerText.toLowerCase() == 'mark all as read') {
     window.postMessage({type: 'UPDATE_NOTIFICATIONS'})
   }
 }, false)
@@ -135,14 +139,25 @@ function updateNotificationsMeta() {
   }
 }
 
+// Variables for throttling notifications meta updates
+let last_meta_update = null
+const meta_update_interval = 60000 // 1 minute
+
 // Listen for DOM node insertions
 document.addEventListener('DOMNodeInserted', e => {
-  // Make sure we have the right element
+  // Make sure we have the right element (new projects popover)
   if (e.target.classList &&
       e.target.classList.contains('popover') &&
       e.target.innerText && 
       e.target.innerText.indexOf('NEW PROJECTS') != -1) {
-        // Update the nofications meta
-        updateNotificationsMeta()
+        // Check if meta updates have been called yet
+        // Or if it has been more than a minute since it was last called
+        if (!last_meta_update || Date.now() > last_meta_update + meta_update_interval) {
+          // Update the nofications meta
+          updateNotificationsMeta()
+
+          // Update the timestamp
+          last_meta_update = Date.now()
+        }      
   }
 })
