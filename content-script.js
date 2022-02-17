@@ -1,3 +1,5 @@
+/* --- Show notification count in title --- */
+
 // Get notifications from the API
 async function getNotifications(token) {
   // Send request to the API
@@ -39,6 +41,8 @@ function updateNotificationsCount(token, title) {
     })
 }
 
+
+/* --- Utilities and Init --- */
 
 // Utility for injecting script into the page
 function injectScript(file_path, tag) {
